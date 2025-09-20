@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NengzX N2J | Netscape to JSON Converter</title>
+    <title>NengzX N2J | Quantum Netscape to JSON Converter</title>
     <style>
         :root {
             --primary: #0cf;
             --secondary: #f0c;
+            --tertiary: #9d00ff;
             --dark-bg: #0a0a12;
             --darker-bg: #050508;
             --card-bg: #121220;
@@ -16,6 +17,7 @@
             --success: #00ff9d;
             --warning: #ffcc00;
             --error: #ff3860;
+            --neon-glow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px var(--primary);
         }
 
         * {
@@ -31,149 +33,202 @@
             min-height: 100vh;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(12, 240, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 85% 30%, rgba(240, 12, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 15% 50%, rgba(12, 240, 255, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(240, 12, 255, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 50% 80%, rgba(157, 0, 255, 0.08) 0%, transparent 25%),
                 linear-gradient(to bottom, var(--darker-bg) 0%, var(--dark-bg) 100%);
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
-        /* Advanced Header with Animated Elements */
+        /* Cyberpunk Header */
         .header {
             text-align: center;
             margin-bottom: 3rem;
             position: relative;
-            padding: 2rem 0;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(12, 240, 255, 0.1) 0%, rgba(240, 12, 255, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(12, 240, 255, 0.2);
+            box-shadow: var(--neon-glow);
+            animation: hologramFloat 6s ease-in-out infinite;
         }
 
         .title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--primary));
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--tertiary), var(--primary));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: titleGlow 3s ease-in-out infinite alternate;
-            text-shadow: 0 0 20px rgba(12, 240, 255, 0.3);
+            animation: titleGlow 3s ease-in-out infinite alternate, textShimmer 8s infinite;
+            text-shadow: 0 0 30px rgba(12, 240, 255, 0.5);
             margin-bottom: 0.5rem;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .title::after {
+            content: 'β';
+            position: absolute;
+            top: -10px;
+            right: -30px;
+            font-size: 2rem;
+            color: var(--success);
+            animation: pulse 2s infinite;
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.8;
+            font-size: 1.4rem;
+            opacity: 0.9;
             margin-bottom: 2rem;
             animation: fadeIn 2s ease-out;
+            text-shadow: 0 0 10px rgba(224, 224, 255, 0.3);
         }
 
-        /* Main Converter Section */
-        .converter {
+        /* Main Converter Grid */
+        .converter-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 3rem;
             margin-bottom: 3rem;
         }
 
-        .input-section, .output-section {
+        .io-section {
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid rgba(12, 240, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid transparent;
+            background-clip: padding-box;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
         }
 
-        .input-section::before, .output-section::before {
+        .io-section::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            animation: borderPulse 2s infinite;
+            bottom: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--tertiary));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: borderFlow 3s linear infinite;
         }
 
         .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
+            text-shadow: 0 0 15px rgba(12, 240, 255, 0.4);
         }
 
-        /* File Drop Zone */
-        .drop-zone {
-            border: 2px dashed rgba(12, 240, 255, 0.3);
-            border-radius: 10px;
-            padding: 3rem 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
+        .section-title::before {
+            content: '⚡';
+            font-size: 2rem;
+            animation: spin 4s linear infinite;
+        }
+
+        /* Text Areas with Holographic Effect */
+        .text-container {
             position: relative;
+            border-radius: 15px;
             overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .drop-zone:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(12, 240, 255, 0.2);
-        }
-
-        .drop-zone.active {
-            border-color: var(--success);
-            background: rgba(0, 255, 157, 0.05);
-        }
-
-        .drop-zone-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-            animation: bounce 2s infinite;
-        }
-
-        /* Textarea Styling */
-        textarea {
+        .text-area {
             width: 100%;
-            min-height: 200px;
-            background: var(--darker-bg);
-            border: 1px solid rgba(12, 240, 255, 0.2);
-            border-radius: 8px;
+            min-height: 400px;
+            background: rgba(10, 10, 20, 0.8);
+            border: 2px solid rgba(12, 240, 255, 0.3);
+            border-radius: 15px;
             color: var(--text);
-            padding: 1rem;
-            resize: vertical;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            transition: border-color 0.3s ease;
+            padding: 1.5rem;
+            resize: none;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 0 20px rgba(12, 240, 255, 0.1);
         }
 
-        textarea:focus {
+        .text-area:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(12, 240, 255, 0.2);
+            box-shadow: inset 0 0 30px rgba(12, 240, 255, 0.2), 0 0 20px rgba(12, 240, 255, 0.3);
         }
 
-        /* Button Styling */
+        .text-area::selection {
+            background: var(--primary);
+            color: black;
+        }
+
+        /* JSON-specific styling */
+        #jsonOutput {
+            background: rgba(5, 5, 12, 0.9);
+            border: 2px solid rgba(240, 12, 255, 0.3);
+            box-shadow: inset 0 0 20px rgba(240, 12, 255, 0.1);
+        }
+
+        #jsonOutput:focus {
+            border-color: var(--secondary);
+            box-shadow: inset 0 0 30px rgba(240, 12, 255, 0.2), 0 0 20px rgba(240, 12, 255, 0.3);
+        }
+
+        /* Real-time Preview */
+        .live-preview {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 157, 0.2);
+            border: 1px solid var(--success);
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: var(--success);
+            animation: glow 2s infinite alternate;
+        }
+
+        /* Action Buttons Grid */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
         .btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 25px;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .btn::before {
@@ -183,8 +238,8 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s;
         }
 
         .btn:hover::before {
@@ -192,68 +247,69 @@
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(12, 240, 255, 0.4);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(12, 240, 255, 0.5);
         }
 
         .btn:active {
-            transform: translateY(0);
-        }
-
-        /* Action Buttons */
-        .actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-            flex-wrap: wrap;
+            transform: translateY(0) scale(1);
         }
 
         .btn-convert {
-            background: linear-gradient(45deg, var(--primary), #0099ff);
+            background: linear-gradient(135deg, var(--primary), #0066ff);
+            box-shadow: 0 0 20px rgba(12, 240, 255, 0.4);
         }
 
         .btn-copy {
-            background: linear-gradient(45deg, var(--secondary), #ff00aa);
+            background: linear-gradient(135deg, var(--secondary), #cc00ff);
+            box-shadow: 0 0 20px rgba(240, 12, 255, 0.4);
         }
 
         .btn-clear {
-            background: linear-gradient(45deg, var(--warning), #ff6600);
+            background: linear-gradient(135deg, var(--warning), #ff5500);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
         }
 
-        /* JSON Output Styling */
-        #jsonOutput {
-            min-height: 250px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.4;
+        .btn-download {
+            background: linear-gradient(135deg, var(--success), #00cc66);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
         }
 
-        /* Status Indicators */
-        .status {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
+        /* Statistics Panel */
+        .stats-panel {
+            background: rgba(18, 18, 32, 0.8);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(12, 240, 255, 0.2);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
             text-align: center;
+            padding: 1rem;
+            background: rgba(12, 240, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(12, 240, 255, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
             font-weight: bold;
-            animation: fadeIn 0.5s ease;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(12, 240, 255, 0.5);
         }
 
-        .status.success {
-            background: rgba(0, 255, 157, 0.1);
-            color: var(--success);
-            border: 1px solid var(--success);
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
         }
 
-        .status.error {
-            background: rgba(255, 56, 96, 0.1);
-            color: var(--error);
-            border: 1px solid var(--error);
-        }
-
-        /* Floating Elements Animation */
-        .floating-elements {
+        /* Particle Animation System */
+        .particles {
             position: fixed;
             top: 0;
             left: 0;
@@ -263,82 +319,114 @@
             z-index: -1;
         }
 
-        .floating-element {
+        .particle {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            opacity: 0.1;
-            animation: float 20s infinite linear;
+            background: var(--primary);
+            opacity: 0.6;
+            animation: particleFloat 20s infinite linear;
         }
 
-        .floating-element:nth-child(1) { top: 10%; left: 10%; animation-duration: 25s; }
-        .floating-element:nth-child(2) { top: 20%; right: 15%; animation-duration: 20s; }
-        .floating-element:nth-child(3) { bottom: 30%; left: 20%; animation-duration: 30s; }
-        .floating-element:nth-child(4) { bottom: 15%; right: 25%; animation-duration: 22s; }
+        .particle:nth-child(3n+1) { background: var(--secondary); animation-duration: 25s; }
+        .particle:nth-child(3n+2) { background: var(--tertiary); animation-duration: 30s; }
+        .particle:nth-child(3n+3) { background: var(--success); animation-duration: 15s; }
 
-        /* Animations */
+        /* Advanced Animations */
         @keyframes titleGlow {
-            0% { text-shadow: 0 0 20px rgba(12, 240, 255, 0.3); }
-            100% { text-shadow: 0 0 30px rgba(240, 12, 255, 0.5), 0 0 40px rgba(240, 12, 255, 0.3); }
+            0% { text-shadow: 0 0 30px rgba(12, 240, 255, 0.5); }
+            100% { text-shadow: 0 0 50px rgba(240, 12, 255, 0.7), 0 0 70px rgba(240, 12, 255, 0.4); }
         }
 
-        @keyframes borderPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes textShimmer {
+            0% { background-position: -100% 0; }
+            100% { background-position: 200% 0; }
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+        @keyframes borderFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes hologramFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.5deg); }
         }
 
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(100px, 50px) rotate(90deg); }
-            50% { transform: translate(200px, 0) rotate(180deg); }
-            75% { transform: translate(100px, -50px) rotate(270deg); }
-            100% { transform: translate(0, 0) rotate(360deg); }
+        @keyframes particleFloat {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0.6; }
+            50% { transform: translate(100px, 200px) rotate(180deg) scale(1.5); opacity: 0.8; }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); opacity: 0.6; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--success); }
+            100% { box-shadow: 0 0 20px var(--success), 0 0 30px var(--success); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
-            .converter {
+        @media (max-width: 1024px) {
+            .converter-grid {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .title {
+                font-size: 3rem;
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
             }
             
             .title {
                 font-size: 2.5rem;
             }
             
-            .actions {
-                flex-direction: column;
+            .action-grid {
+                grid-template-columns: 1fr;
             }
             
-            .btn {
-                width: 100%;
+            .io-section {
+                padding: 1.5rem;
+            }
+            
+            .text-area {
+                min-height: 300px;
             }
         }
 
-        /* Advanced Scrollbar */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 12px;
         }
 
         ::-webkit-scrollbar-track {
             background: var(--darker-bg);
+            border-radius: 6px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 4px;
+            border-radius: 6px;
+            border: 2px solid var(--darker-bg);
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -347,275 +435,394 @@
     </style>
 </head>
 <body>
-    <div class="floating-elements">
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-    </div>
+    <div class="particles" id="particleCanvas"></div>
 
     <div class="container">
         <header class="header">
             <h1 class="title">NengzX N2J</h1>
-            <p class="subtitle">Advanced Netscape Cookie Format to JSON Converter</p>
+            <p class="subtitle">QUANTUM NETSCAPE TO JSON CONVERTER</p>
         </header>
 
         <main>
-            <div class="converter">
-                <div class="input-section">
-                    <h2 class="section-title">
-                        <span>📥 Input</span>
-                    </h2>
-                    <div class="drop-zone" id="dropZone">
-                        <div class="drop-zone-icon">📂</div>
-                        <p>Drag & Drop Netscape Cookie File Here</p>
-                        <p><small>or click to browse</small></p>
+            <div class="converter-grid">
+                <!-- Input Section -->
+                <div class="io-section">
+                    <h2 class="section-title">NETSCAPE INPUT</h2>
+                    <div class="text-container">
+                        <textarea 
+                            id="cookieInput" 
+                            class="text-area"
+                            placeholder="Paste Netscape cookie format here or drop a file...
+Example:
+.example.com	TRUE	/	FALSE	1735689600	SESSION_ID	abc123def456ghi789"
+                            spellcheck="false"
+                        ></textarea>
+                        <div class="live-preview">LIVE EDITING</div>
                     </div>
-                    <textarea id="cookieInput" placeholder="Paste Netscape cookie format here or drop a file..."></textarea>
                 </div>
 
-                <div class="output-section">
-                    <h2 class="section-title">
-                        <span>📤 Output</span>
-                    </h2>
-                    <div id="jsonOutput" contenteditable="true" placeholder="JSON output will appear here..."></div>
-                    <div id="status" class="status" style="display: none;"></div>
+                <!-- Output Section -->
+                <div class="io-section">
+                    <h2 class="section-title">JSON OUTPUT</h2>
+                    <div class="text-container">
+                        <textarea 
+                            id="jsonOutput" 
+                            class="text-area"
+                            placeholder="JSON output will appear here automatically..."
+                            readonly
+                            spellcheck="false"
+                        ></textarea>
+                        <div class="live-preview">AUTO-UPDATING</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="actions">
-                <button class="btn btn-convert" id="convertBtn">Convert to JSON</button>
-                <button class="btn btn-copy" id="copyBtn">Copy JSON</button>
-                <button class="btn btn-clear" id="clearBtn">Clear All</button>
+            <!-- Action Buttons -->
+            <div class="action-grid">
+                <button class="btn btn-convert" id="convertBtn">
+                    <span class="btn-icon">⚡</span>
+                    CONVERT
+                </button>
+                <button class="btn btn-copy" id="copyBtn">
+                    <span class="btn-icon">📋</span>
+                    COPY JSON
+                </button>
+                <button class="btn btn-clear" id="clearBtn">
+                    <span class="btn-icon">🗑️</span>
+                    CLEAR ALL
+                </button>
+                <button class="btn btn-download" id="downloadBtn">
+                    <span class="btn-icon">💾</span>
+                    DOWNLOAD JSON
+                </button>
+            </div>
+
+            <!-- Statistics Panel -->
+            <div class="stats-panel" id="statsPanel">
+                <div class="stat-item">
+                    <div class="stat-value" id="cookieCount">0</div>
+                    <div class="stat-label">COOKIES</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="domainCount">0</div>
+                    <div class="stat-label">DOMAINS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="secureCount">0</div>
+                    <div class="stat-label">SECURE</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="sessionCount">0</div>
+                    <div class="stat-label">SESSION</div>
+                </div>
             </div>
         </main>
     </div>
 
     <script>
-        class NetscapeToJSONConverter {
+        class QuantumNetscapeConverter {
             constructor() {
-                this.dropZone = document.getElementById('dropZone');
                 this.cookieInput = document.getElementById('cookieInput');
                 this.jsonOutput = document.getElementById('jsonOutput');
                 this.convertBtn = document.getElementById('convertBtn');
                 this.copyBtn = document.getElementById('copyBtn');
                 this.clearBtn = document.getElementById('clearBtn');
-                this.status = document.getElementById('status');
+                this.downloadBtn = document.getElementById('downloadBtn');
+                this.statsPanel = document.getElementById('statsPanel');
                 
-                this.initializeEventListeners();
+                // Stats elements
+                this.cookieCount = document.getElementById('cookieCount');
+                this.domainCount = document.getElementById('domainCount');
+                this.secureCount = document.getElementById('secureCount');
+                this.sessionCount = document.getElementById('sessionCount');
+                
+                this.init();
             }
 
-            initializeEventListeners() {
-                // Drag and drop functionality
-                this.dropZone.addEventListener('click', () => {
-                    this.createFileInput();
-                });
+            init() {
+                this.setupEventListeners();
+                this.createParticles(50);
+                this.setupRealTimeConversion();
+            }
 
-                this.dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    this.dropZone.classList.add('active');
-                });
-
-                this.dropZone.addEventListener('dragleave', () => {
-                    this.dropZone.classList.remove('active');
-                });
-
-                this.dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    this.dropZone.classList.remove('active');
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        this.handleFile(files[0]);
-                    }
-                });
-
-                // Button event listeners
-                this.convertBtn.addEventListener('click', () => this.convert());
+            setupEventListeners() {
+                // Drag and drop
+                this.cookieInput.addEventListener('dragover', (e) => e.preventDefault());
+                this.cookieInput.addEventListener('drop', (e) => this.handleFileDrop(e));
+                
+                // Button events
+                this.convertBtn.addEventListener('click', () => this.convertWithEffects());
                 this.copyBtn.addEventListener('click', () => this.copyToClipboard());
                 this.clearBtn.addEventListener('click', () => this.clearAll());
-
-                // Paste functionality
-                document.addEventListener('paste', (e) => {
-                    if (e.clipboardData.files.length > 0) {
-                        this.handleFile(e.clipboardData.files[0]);
-                    }
-                });
+                this.downloadBtn.addEventListener('click', () => this.downloadJSON());
+                
+                // Real-time input
+                this.cookieInput.addEventListener('input', () => this.scheduleConversion());
             }
 
-            createFileInput() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.txt,.cookies';
-                input.onchange = (e) => {
-                    if (e.target.files.length > 0) {
-                        this.handleFile(e.target.files[0]);
-                    }
-                };
-                input.click();
+            setupRealTimeConversion() {
+                this.conversionTimeout = null;
+                this.lastInput = '';
             }
 
-            handleFile(file) {
+            scheduleConversion() {
+                clearTimeout(this.conversionTimeout);
+                this.conversionTimeout = setTimeout(() => {
+                    if (this.cookieInput.value !== this.lastInput) {
+                        this.convert();
+                        this.lastInput = this.cookieInput.value;
+                    }
+                }, 500);
+            }
+
+            handleFileDrop(e) {
+                e.preventDefault();
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.readFile(files[0]);
+                }
+            }
+
+            readFile(file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     this.cookieInput.value = e.target.result;
-                    this.convert();
+                    this.convertWithEffects();
                 };
                 reader.readAsText(file);
             }
 
-            parseNetscapeFormat(cookieText) {
-                const lines = cookieText.trim().split('\n');
+            parseNetscapeFormat(text) {
+                const lines = text.split('\n');
                 const cookies = [];
-                
-                for (const line of lines) {
-                    if (line.trim() === '' || line.startsWith('#') || line.startsWith('//')) {
-                        continue;
-                    }
+                const domains = new Set();
+                let secureCount = 0;
+                let sessionCount = 0;
 
-                    const parts = line.split('\t').filter(part => part.trim() !== '');
+                for (const line of lines) {
+                    if (this.isCommentLine(line)) continue;
                     
+                    const parts = line.split('\t').filter(part => part.trim() !== '');
                     if (parts.length >= 7) {
                         const cookie = {
-                            domain: parts[0]?.trim() || '',
+                            domain: parts[0]?.trim(),
                             flag: parts[1]?.trim() === 'TRUE',
-                            path: parts[2]?.trim() || '',
+                            path: parts[2]?.trim(),
                             secure: parts[3]?.trim() === 'TRUE',
-                            expiration: parseInt(parts[4]?.trim()) || 0,
-                            name: parts[5]?.trim() || '',
-                            value: parts[6]?.trim() || ''
+                            expiration: this.parseExpiration(parts[4]?.trim()),
+                            name: parts[5]?.trim(),
+                            value: parts[6]?.trim(),
+                            httpOnly: parts.length > 7 ? parts[7]?.trim() === 'TRUE' : false
                         };
-                        
-                        // Additional parsing for extended attributes
-                        if (parts.length > 7) {
-                            cookie.extended = parts.slice(7).join('\t').trim();
-                        }
-                        
+
                         cookies.push(cookie);
+                        domains.add(cookie.domain);
+                        if (cookie.secure) secureCount++;
+                        if (cookie.expiration === 0) sessionCount++;
                     }
                 }
-                
-                return cookies;
+
+                return {
+                    cookies,
+                    stats: {
+                        total: cookies.length,
+                        domains: domains.size,
+                        secure: secureCount,
+                        session: sessionCount
+                    }
+                };
+            }
+
+            isCommentLine(line) {
+                return line.trim() === '' || line.startsWith('#') || line.startsWith('//');
+            }
+
+            parseExpiration(timestamp) {
+                const exp = parseInt(timestamp) || 0;
+                return exp < 0 ? 0 : exp;
             }
 
             convert() {
                 try {
-                    const inputText = this.cookieInput.value.trim();
-                    if (!inputText) {
-                        this.showStatus('Please provide Netscape cookie data', 'error');
+                    const input = this.cookieInput.value.trim();
+                    if (!input) {
+                        this.jsonOutput.value = '';
+                        this.updateStats({ total: 0, domains: 0, secure: 0, session: 0 });
                         return;
                     }
 
-                    const cookies = this.parseNetscapeFormat(inputText);
+                    const result = this.parseNetscapeFormat(input);
+                    const json = JSON.stringify(result.cookies, null, 2);
                     
-                    if (cookies.length === 0) {
-                        this.showStatus('No valid cookies found in the input', 'error');
-                        return;
-                    }
-
-                    const jsonOutput = JSON.stringify(cookies, null, 2);
-                    this.jsonOutput.textContent = jsonOutput;
-                    
-                    this.showStatus(`Successfully converted ${cookies.length} cookies`, 'success');
+                    this.jsonOutput.value = json;
+                    this.updateStats(result.stats);
                     
                 } catch (error) {
-                    this.showStatus(`Conversion error: ${error.message}`, 'error');
+                    this.jsonOutput.value = `// Conversion Error: ${error.message}`;
                     console.error('Conversion error:', error);
                 }
             }
 
-            copyToClipboard() {
-                try {
-                    const jsonText = this.jsonOutput.textContent;
-                    if (!jsonText.trim()) {
-                        this.showStatus('No JSON data to copy', 'error');
-                        return;
-                    }
+            convertWithEffects() {
+                // Add visual effects during conversion
+                this.addConversionEffects();
+                this.convert();
+            }
 
-                    navigator.clipboard.writeText(jsonText).then(() => {
-                        this.showStatus('JSON copied to clipboard!', 'success');
-                        
-                        // Visual feedback for copy action
-                        this.copyBtn.textContent = '✓ Copied!';
-                        setTimeout(() => {
-                            this.copyBtn.textContent = 'Copy JSON';
-                        }, 2000);
-                    });
-                } catch (error) {
-                    this.showStatus('Failed to copy to clipboard', 'error');
-                }
+            addConversionEffects() {
+                // Add particle effect from input to output
+                this.createConversionParticles();
+                
+                // Add glow effect to output
+                this.jsonOutput.style.boxShadow = 'inset 0 0 50px rgba(240, 12, 255, 0.3), 0 0 30px rgba(240, 12, 255, 0.4)';
+                setTimeout(() => {
+                    this.jsonOutput.style.boxShadow = 'inset 0 0 20px rgba(240, 12, 255, 0.1)';
+                }, 1000);
+            }
+
+            updateStats(stats) {
+                this.animateValue(this.cookieCount, 0, stats.total, 1000);
+                this.animateValue(this.domainCount, 0, stats.domains, 1000);
+                this.animateValue(this.secureCount, 0, stats.secure, 1000);
+                this.animateValue(this.sessionCount, 0, stats.session, 1000);
+            }
+
+            animateValue(element, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const value = Math.floor(progress * (end - start) + start);
+                    element.textContent = value;
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    }
+                };
+                requestAnimationFrame(step);
+            }
+
+            copyToClipboard() {
+                if (!this.jsonOutput.value) return;
+                
+                navigator.clipboard.writeText(this.jsonOutput.value).then(() => {
+                    this.showFeedback(this.copyBtn, '✓ COPIED!');
+                    this.createParticles(20, this.copyBtn);
+                });
             }
 
             clearAll() {
                 this.cookieInput.value = '';
-                this.jsonOutput.textContent = '';
-                this.hideStatus();
+                this.jsonOutput.value = '';
+                this.updateStats({ total: 0, domains: 0, secure: 0, session: 0 });
+                this.showFeedback(this.clearBtn, '✓ CLEARED!');
+            }
+
+            downloadJSON() {
+                if (!this.jsonOutput.value) return;
                 
-                // Visual feedback for clear action
-                this.clearBtn.textContent = '✓ Cleared!';
+                const blob = new Blob([this.jsonOutput.value], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cookies.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.showFeedback(this.downloadBtn, '✓ DOWNLOADED!');
+            }
+
+            showFeedback(button, text) {
+                const original = button.innerHTML;
+                button.innerHTML = text;
+                button.style.background = 'linear-gradient(135deg, var(--success), #00cc66)';
+                
                 setTimeout(() => {
-                    this.clearBtn.textContent = 'Clear All';
+                    button.innerHTML = original;
+                    button.style.background = '';
                 }, 2000);
             }
 
-            showStatus(message, type) {
-                this.status.textContent = message;
-                this.status.className = `status ${type}`;
-                this.status.style.display = 'block';
-                
-                // Auto-hide success messages after 3 seconds
-                if (type === 'success') {
-                    setTimeout(() => {
-                        this.hideStatus();
-                    }, 3000);
+            createParticles(count, aroundElement = null) {
+                const container = document.getElementById('particleCanvas');
+                for (let i = 0; i < count; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    
+                    if (aroundElement) {
+                        const rect = aroundElement.getBoundingClientRect();
+                        particle.style.left = `${rect.left + rect.width/2 + (Math.random() - 0.5) * 100}px`;
+                        particle.style.top = `${rect.top + rect.height/2 + (Math.random() - 0.5) * 100}px`;
+                    } else {
+                        particle.style.left = `${Math.random() * 100}vw`;
+                        particle.style.top = `${Math.random() * 100}vh`;
+                    }
+                    
+                    particle.style.animationDelay = `${Math.random() * 5}s`;
+                    container.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 20000);
                 }
             }
 
-            hideStatus() {
-                this.status.style.display = 'none';
+            createConversionParticles() {
+                const inputRect = this.cookieInput.getBoundingClientRect();
+                const outputRect = this.jsonOutput.getBoundingClientRect();
+                
+                for (let i = 0; i < 15; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = `${inputRect.right}px`;
+                    particle.style.top = `${inputRect.top + inputRect.height/2}px`;
+                    
+                    document.body.appendChild(particle);
+                    
+                    // Animate to output
+                    particle.animate([
+                        { left: `${inputRect.right}px`, top: `${inputRect.top + inputRect.height/2}px` },
+                        { left: `${outputRect.left}px`, top: `${outputRect.top + outputRect.height/2}px` }
+                    ], {
+                        duration: 1000,
+                        easing: 'ease-out'
+                    });
+                    
+                    setTimeout(() => particle.remove(), 1000);
+                }
             }
         }
 
-        // Initialize the converter when the page loads
+        // Initialize with advanced effects
         document.addEventListener('DOMContentLoaded', () => {
-            new NetscapeToJSONConverter();
+            const converter = new QuantumNetscapeConverter();
             
-            // Add some initial animation delay for elements
-            document.querySelectorAll('.input-section, .output-section').forEach((el, index) => {
-                el.style.animationDelay = `${index * 0.1}s`;
-            });
+            // Add initial animation
+            setTimeout(() => {
+                converter.createParticles(30);
+            }, 500);
+            
+            // Make converter globally available for advanced users
+            window.QuantumConverter = converter;
         });
 
-        // Additional advanced features
-        class AdvancedCookieFeatures {
-            static validateCookie(cookie) {
-                // Basic cookie validation rules
-                const issues = [];
-                
-                if (!cookie.domain) issues.push('Missing domain');
-                if (!cookie.name) issues.push('Missing name');
-                if (cookie.expiration < 0) issues.push('Invalid expiration');
-                
-                return issues;
-            }
-
-            static formatExpiration(timestamp) {
-                if (!timestamp) return 'Session';
-                return new Date(timestamp * 1000).toLocaleString();
-            }
-
-            static generateCURLCommand(cookies, url) {
-                if (!cookies.length || !url) return '';
-                
-                const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
-                return `curl -H "Cookie: ${cookieHeader}" "${url}"`;
-            }
-        }
-
-        // Export functionality for advanced users
-        window.NetscapeToJSON = {
-            Converter: NetscapeToJSONConverter,
-            Advanced: AdvancedCookieFeatures
+        // Add syntax highlighting for JSON
+        const observeJSONOutput = () => {
+            const output = document.getElementById('jsonOutput');
+            const observer = new MutationObserver(() => {
+                if (output.value) {
+                    output.style.background = 'linear-gradient(135deg, rgba(5, 5, 12, 0.9), rgba(18, 5, 25, 0.9))';
+                } else {
+                    output.style.background = 'rgba(5, 5, 12, 0.9)';
+                }
+            });
+            
+            observer.observe(output, { childList: true, characterData: true, subtree: true });
         };
+
+        // Start observing when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', observeJSONOutput);
+        } else {
+            observeJSONOutput();
+        }
     </script>
 </body>
 </html>
