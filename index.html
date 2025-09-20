@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NengzX N2J | Netscape to JSON Converter</title>
+    <style>
+        :root {
+            --primary: #0cf;
+            --secondary: #f0c;
+            --dark-bg: #0a0a12;
+            --darker-bg: #050508;
+            --card-bg: #121220;
+            --text: #e0e0ff;
+            --accent: #8a2be2;
+            --success: #00ff9d;
+            --warning: #ffcc00;
+            --error: #ff3860;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(12, 240, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 85% 30%, rgba(240, 12, 255, 0.05) 0%, transparent 20%),
+                linear-gradient(to bottom, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Advanced Header with Animated Elements */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+            text-shadow: 0 0 20px rgba(12, 240, 255, 0.3);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            animation: fadeIn 2s ease-out;
+        }
+
+        /* Main Converter Section */
+        .converter {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .input-section, .output-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(12, 240, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-section::before, .output-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            animation: borderPulse 2s infinite;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* File Drop Zone */
+        .drop-zone {
+            border: 2px dashed rgba(12, 240, 255, 0.3);
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(12, 240, 255, 0.2);
+        }
+
+        .drop-zone.active {
+            border-color: var(--success);
+            background: rgba(0, 255, 157, 0.05);
+        }
+
+        .drop-zone-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            animation: bounce 2s infinite;
+        }
+
+        /* Textarea Styling */
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            background: var(--darker-bg);
+            border: 1px solid rgba(12, 240, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text);
+            padding: 1rem;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(12, 240, 255, 0.2);
+        }
+
+        /* Button Styling */
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(12, 240, 255, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-convert {
+            background: linear-gradient(45deg, var(--primary), #0099ff);
+        }
+
+        .btn-copy {
+            background: linear-gradient(45deg, var(--secondary), #ff00aa);
+        }
+
+        .btn-clear {
+            background: linear-gradient(45deg, var(--warning), #ff6600);
+        }
+
+        /* JSON Output Styling */
+        #jsonOutput {
+            min-height: 250px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Status Indicators */
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .status.success {
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status.error {
+            background: rgba(255, 56, 96, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        /* Floating Elements Animation */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .floating-element:nth-child(1) { top: 10%; left: 10%; animation-duration: 25s; }
+        .floating-element:nth-child(2) { top: 20%; right: 15%; animation-duration: 20s; }
+        .floating-element:nth-child(3) { bottom: 30%; left: 20%; animation-duration: 30s; }
+        .floating-element:nth-child(4) { bottom: 15%; right: 25%; animation-duration: 22s; }
+
+        /* Animations */
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 20px rgba(12, 240, 255, 0.3); }
+            100% { text-shadow: 0 0 30px rgba(240, 12, 255, 0.5), 0 0 40px rgba(240, 12, 255, 0.3); }
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, 50px) rotate(90deg); }
+            50% { transform: translate(200px, 0) rotate(180deg); }
+            75% { transform: translate(100px, -50px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .converter {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Advanced Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">NengzX N2J</h1>
+            <p class="subtitle">Advanced Netscape Cookie Format to JSON Converter</p>
+        </header>
+
+        <main>
+            <div class="converter">
+                <div class="input-section">
+                    <h2 class="section-title">
+                        <span>📥 Input</span>
+                    </h2>
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-zone-icon">📂</div>
+                        <p>Drag & Drop Netscape Cookie File Here</p>
+                        <p><small>or click to browse</small></p>
+                    </div>
+                    <textarea id="cookieInput" placeholder="Paste Netscape cookie format here or drop a file..."></textarea>
+                </div>
+
+                <div class="output-section">
+                    <h2 class="section-title">
+                        <span>📤 Output</span>
+                    </h2>
+                    <div id="jsonOutput" contenteditable="true" placeholder="JSON output will appear here..."></div>
+                    <div id="status" class="status" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-convert" id="convertBtn">Convert to JSON</button>
+                <button class="btn btn-copy" id="copyBtn">Copy JSON</button>
+                <button class="btn btn-clear" id="clearBtn">Clear All</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        class NetscapeToJSONConverter {
+            constructor() {
+                this.dropZone = document.getElementById('dropZone');
+                this.cookieInput = document.getElementById('cookieInput');
+                this.jsonOutput = document.getElementById('jsonOutput');
+                this.convertBtn = document.getElementById('convertBtn');
+                this.copyBtn = document.getElementById('copyBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.status = document.getElementById('status');
+                
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                // Drag and drop functionality
+                this.dropZone.addEventListener('click', () => {
+                    this.createFileInput();
+                });
+
+                this.dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.dropZone.classList.add('active');
+                });
+
+                this.dropZone.addEventListener('dragleave', () => {
+                    this.dropZone.classList.remove('active');
+                });
+
+                this.dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.dropZone.classList.remove('active');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.handleFile(files[0]);
+                    }
+                });
+
+                // Button event listeners
+                this.convertBtn.addEventListener('click', () => this.convert());
+                this.copyBtn.addEventListener('click', () => this.copyToClipboard());
+                this.clearBtn.addEventListener('click', () => this.clearAll());
+
+                // Paste functionality
+                document.addEventListener('paste', (e) => {
+                    if (e.clipboardData.files.length > 0) {
+                        this.handleFile(e.clipboardData.files[0]);
+                    }
+                });
+            }
+
+            createFileInput() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.txt,.cookies';
+                input.onchange = (e) => {
+                    if (e.target.files.length > 0) {
+                        this.handleFile(e.target.files[0]);
+                    }
+                };
+                input.click();
+            }
+
+            handleFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.cookieInput.value = e.target.result;
+                    this.convert();
+                };
+                reader.readAsText(file);
+            }
+
+            parseNetscapeFormat(cookieText) {
+                const lines = cookieText.trim().split('\n');
+                const cookies = [];
+                
+                for (const line of lines) {
+                    if (line.trim() === '' || line.startsWith('#') || line.startsWith('//')) {
+                        continue;
+                    }
+
+                    const parts = line.split('\t').filter(part => part.trim() !== '');
+                    
+                    if (parts.length >= 7) {
+                        const cookie = {
+                            domain: parts[0]?.trim() || '',
+                            flag: parts[1]?.trim() === 'TRUE',
+                            path: parts[2]?.trim() || '',
+                            secure: parts[3]?.trim() === 'TRUE',
+                            expiration: parseInt(parts[4]?.trim()) || 0,
+                            name: parts[5]?.trim() || '',
+                            value: parts[6]?.trim() || ''
+                        };
+                        
+                        // Additional parsing for extended attributes
+                        if (parts.length > 7) {
+                            cookie.extended = parts.slice(7).join('\t').trim();
+                        }
+                        
+                        cookies.push(cookie);
+                    }
+                }
+                
+                return cookies;
+            }
+
+            convert() {
+                try {
+                    const inputText = this.cookieInput.value.trim();
+                    if (!inputText) {
+                        this.showStatus('Please provide Netscape cookie data', 'error');
+                        return;
+                    }
+
+                    const cookies = this.parseNetscapeFormat(inputText);
+                    
+                    if (cookies.length === 0) {
+                        this.showStatus('No valid cookies found in the input', 'error');
+                        return;
+                    }
+
+                    const jsonOutput = JSON.stringify(cookies, null, 2);
+                    this.jsonOutput.textContent = jsonOutput;
+                    
+                    this.showStatus(`Successfully converted ${cookies.length} cookies`, 'success');
+                    
+                } catch (error) {
+                    this.showStatus(`Conversion error: ${error.message}`, 'error');
+                    console.error('Conversion error:', error);
+                }
+            }
+
+            copyToClipboard() {
+                try {
+                    const jsonText = this.jsonOutput.textContent;
+                    if (!jsonText.trim()) {
+                        this.showStatus('No JSON data to copy', 'error');
+                        return;
+                    }
+
+                    navigator.clipboard.writeText(jsonText).then(() => {
+                        this.showStatus('JSON copied to clipboard!', 'success');
+                        
+                        // Visual feedback for copy action
+                        this.copyBtn.textContent = '✓ Copied!';
+                        setTimeout(() => {
+                            this.copyBtn.textContent = 'Copy JSON';
+                        }, 2000);
+                    });
+                } catch (error) {
+                    this.showStatus('Failed to copy to clipboard', 'error');
+                }
+            }
+
+            clearAll() {
+                this.cookieInput.value = '';
+                this.jsonOutput.textContent = '';
+                this.hideStatus();
+                
+                // Visual feedback for clear action
+                this.clearBtn.textContent = '✓ Cleared!';
+                setTimeout(() => {
+                    this.clearBtn.textContent = 'Clear All';
+                }, 2000);
+            }
+
+            showStatus(message, type) {
+                this.status.textContent = message;
+                this.status.className = `status ${type}`;
+                this.status.style.display = 'block';
+                
+                // Auto-hide success messages after 3 seconds
+                if (type === 'success') {
+                    setTimeout(() => {
+                        this.hideStatus();
+                    }, 3000);
+                }
+            }
+
+            hideStatus() {
+                this.status.style.display = 'none';
+            }
+        }
+
+        // Initialize the converter when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new NetscapeToJSONConverter();
+            
+            // Add some initial animation delay for elements
+            document.querySelectorAll('.input-section, .output-section').forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // Additional advanced features
+        class AdvancedCookieFeatures {
+            static validateCookie(cookie) {
+                // Basic cookie validation rules
+                const issues = [];
+                
+                if (!cookie.domain) issues.push('Missing domain');
+                if (!cookie.name) issues.push('Missing name');
+                if (cookie.expiration < 0) issues.push('Invalid expiration');
+                
+                return issues;
+            }
+
+            static formatExpiration(timestamp) {
+                if (!timestamp) return 'Session';
+                return new Date(timestamp * 1000).toLocaleString();
+            }
+
+            static generateCURLCommand(cookies, url) {
+                if (!cookies.length || !url) return '';
+                
+                const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
+                return `curl -H "Cookie: ${cookieHeader}" "${url}"`;
+            }
+        }
+
+        // Export functionality for advanced users
+        window.NetscapeToJSON = {
+            Converter: NetscapeToJSONConverter,
+            Advanced: AdvancedCookieFeatures
+        };
+    </script>
+</body>
+</html>
